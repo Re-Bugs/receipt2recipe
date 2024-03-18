@@ -3,11 +3,15 @@
 
 영수증 스캔 한 번으로 레시피 추천
 
+<br>
+
 
 
 ## Architecture
 
 ![Architecture](images/README/Architecture.png)
+
+<br>
 
 
 
@@ -22,6 +26,8 @@
 | API       | ?                      |
 | UI        | Figma                  |
 
+<br>
+
 
 
 ## Members
@@ -33,7 +39,11 @@
 | 송기남 | AI소프트웨어 | UI               |
 | 이창엽 | AI소프트웨어 | Front-End        |
 
+<br>
+
 
 
 ## Database Modeling
+
+
 
