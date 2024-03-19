@@ -45,5 +45,4 @@
 
 ## Database Modeling
 
-![다운로드](images/README/다운로드.jpeg)
-
+![download](images/README/download.jpeg)
