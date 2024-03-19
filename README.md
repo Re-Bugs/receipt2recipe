@@ -17,14 +17,14 @@
 
 ## Tech-Stack
 
-| 분류      | 기술                   |
-| --------- | ---------------------- |
-| 서버 환경 | Amazon Ubuntu LTS      |
-| Database  | Amazon RDS, MySQL      |
-| Front-End | Android Native(Kotlin) |
-| Back-End  | Spring Boot, JPA       |
-| API       | ?                      |
-| UI        | Figma                  |
+| 분류      | 기술                                       |
+| --------- | ------------------------------------------ |
+| 서버 환경 | Amazon Ubuntu LTS                          |
+| Database  | Amazon RDS, MySQL                          |
+| Front-End | Android Native(Kotlin)                     |
+| Back-End  | Spring Boot, JPA                           |
+| API       | Google Cloud OCR (Google Cloud Vision API) |
+| UI        | Figma                                      |
 
 <br>
 
@@ -44,9 +44,3 @@
 
 
 ## Database Modeling
-
-![download](images/README/download.jpeg)
-
-![download2](images/README/download2.png)
-
-![download3](images/README/download3.jpg)
