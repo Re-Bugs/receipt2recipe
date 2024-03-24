@@ -45,16 +45,3 @@
 
 ## Database Modeling
 
-![a1](images/README/a1.jpeg)
-
-![a2](images/README/a2.jpeg)
-
-![a3](images/README/a3.png)
-
-![a4](images/README/a4.jpeg)
-
-![a5](images/README/a5.jpeg)
-
-![a6](images/README/a6.jpeg)
-
-![a7](images/README/a7.jpeg)
