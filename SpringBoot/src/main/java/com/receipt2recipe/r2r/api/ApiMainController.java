@@ -1,15 +1,9 @@
 package com.receipt2recipe.r2r.api;
 
 import com.receipt2recipe.r2r.domain.*;
-import com.receipt2recipe.r2r.dto.HeartDTO;
-import com.receipt2recipe.r2r.dto.RecipeDTO;
-import com.receipt2recipe.r2r.dto.RecipeDetailDTO;
-import com.receipt2recipe.r2r.dto.RefAndIgdtDTO;
+import com.receipt2recipe.r2r.dto.*;
 import com.receipt2recipe.r2r.exception.UniqueConstraintViolationException;
-import com.receipt2recipe.r2r.service.FridgeService;
-import com.receipt2recipe.r2r.service.HeartService;
-import com.receipt2recipe.r2r.service.IngredientService;
-import com.receipt2recipe.r2r.service.RecipeService;
+import com.receipt2recipe.r2r.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,6 +28,7 @@ public class ApiMainController {
     private final FridgeService fridgeService;
     private final HeartService heartService;
     private final IngredientService ingredientService;
+    private final ReviewService reviewService;
 
     @GetMapping("/all_rcplist")
     public List<RecipeDTO> getAllRecipes() {
@@ -132,7 +127,7 @@ public class ApiMainController {
         } catch (NoSuchElementException e) {
             log.error("{}", e.getMessage());
             response.put("message", "One or more ingredients not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         } catch (Exception e) {
             response.put("message", "Fail");
             log.error("{}", e.getMessage());
@@ -154,7 +149,7 @@ public class ApiMainController {
         } catch (IllegalArgumentException e) {
             log.error("{}", e.getMessage());
             response.put("message", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         } catch (Exception e) {
             response.put("message", "Fail");
             log.error("{}", e.getMessage());
@@ -181,6 +176,27 @@ public class ApiMainController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @PostMapping("/add_review")
+    public ResponseEntity<Map<String, String>> addReview(@RequestBody ReviewDTO reviewDTO, @RequestParam("q") Long rcpId, HttpSession session) {
+        Member member = (Member) session.getAttribute("user");
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            recipeService.addReview(reviewDTO, member.getUserEmail(), rcpId);
+            response.put("message", "success");
+            return ResponseEntity.ok(response);
+        } catch (UniqueConstraintViolationException e) {
+            log.error(e.getMessage());
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        } catch (Exception e) {
+            log.error("{}", e.getMessage());
+            response.put("message", "Failed to add review");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 
 
 }

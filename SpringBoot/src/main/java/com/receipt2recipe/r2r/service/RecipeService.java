@@ -1,14 +1,17 @@
 package com.receipt2recipe.r2r.service;
 
+import com.receipt2recipe.r2r.domain.Member;
 import com.receipt2recipe.r2r.domain.Recipe;
-import com.receipt2recipe.r2r.domain.RefAndIgdt;
+import com.receipt2recipe.r2r.domain.Review;
 import com.receipt2recipe.r2r.dto.*;
+import com.receipt2recipe.r2r.exception.UniqueConstraintViolationException;
+import com.receipt2recipe.r2r.repository.MemberRepository;
 import com.receipt2recipe.r2r.repository.RecipeRepository;
-import com.receipt2recipe.r2r.repository.RefAndIgdtRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +23,12 @@ import java.util.stream.Collectors;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final ReviewService reviewService;
+    private final MemberRepository memberRepository;
     private final FridgeService fridgeService;
+
     public Recipe getRecipeById(Long id) {
         return recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
     }
-
 
     public List<RecipeDTO> getAllRecipeDTOs() {
         List<Long> recipeIds = recipeRepository.findAllRecipeIds(); // 모든 레시피 ID를 가져옴
@@ -104,5 +108,29 @@ public class RecipeService {
                         recipe.getImageUrl(),
                         recipe.getQuantities()))
                 .collect(Collectors.toList());
+    }
+
+    public void addReview(ReviewDTO reviewDTO, String userEmail, Long rcpId) {
+        // Recipe와 Member 객체를 찾아서 설정
+        Recipe recipe = getRecipeById(rcpId);
+        Member member = memberRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user email"));
+
+        // 중복 리뷰 체크
+        Optional<Review> existingReview = reviewService.getReviewByUserEmailAndRecipeId(userEmail, rcpId);
+        if (existingReview.isPresent()) {
+            throw new UniqueConstraintViolationException("already reviewed this recipe.");
+        }
+
+        // Review 객체 생성 및 설정
+        Review review = new Review();
+        review.setRecipe(recipe);
+        review.setUserEmail(userEmail);
+        review.setRating(reviewDTO.getRating());
+        review.setComment(reviewDTO.getComment());
+        review.setModifiedDate(LocalDateTime.now());
+
+        // Review 저장
+        reviewService.saveReview(review);
     }
 }
