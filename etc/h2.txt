@@ -7,14 +7,14 @@ CREATE TABLE Member (
     user_phone VARCHAR(20) NOT NULL
 );
 
--- ingredients 테이블 삭제 및 생성
+-- Ingredients 테이블 삭제 및 생성
 DROP TABLE IF EXISTS ingredients CASCADE;
 CREATE TABLE ingredients (
     igdt_id IDENTITY PRIMARY KEY,
     igdt_name VARCHAR(255) UNIQUE
 );
 
--- recipes 테이블 삭제 및 생성
+-- Recipes 테이블 삭제 및 생성
 DROP TABLE IF EXISTS recipes CASCADE;
 CREATE TABLE recipes (
     rcp_id INT PRIMARY KEY,
@@ -25,27 +25,26 @@ CREATE TABLE recipes (
     rcp_quantities VARCHAR(10)
 );
 
--- fridge 테이블 삭제 및 생성
+-- Fridge 테이블 삭제 및 생성
 DROP TABLE IF EXISTS fridge CASCADE;
 CREATE TABLE fridge (
     rf_id IDENTITY PRIMARY KEY,
-    user_email VARCHAR(255),
+    user_email VARCHAR(255) UNIQUE,
     FOREIGN KEY (user_email) REFERENCES Member(user_email)
 );
 
+-- Ref_and_igdt 테이블 삭제 및 생성
 DROP TABLE IF EXISTS ref_and_igdt CASCADE;
 CREATE TABLE ref_and_igdt (
     ref_igdt_id IDENTITY PRIMARY KEY,
     rf_id INT,
-    igdt_id INT UNIQUE,
+    igdt_id INT,
     purchase_date DATE DEFAULT CURRENT_DATE,
     FOREIGN KEY (igdt_id) REFERENCES ingredients(igdt_id),
     FOREIGN KEY (rf_id) REFERENCES fridge(rf_id)
 );
 
-
-
--- recipe_igdt 테이블 삭제 및 생성
+-- Recipe_igdt 테이블 삭제 및 생성
 DROP TABLE IF EXISTS recipe_igdt CASCADE;
 CREATE TABLE recipe_igdt (
     rcp_igdt_id IDENTITY PRIMARY KEY,
@@ -56,17 +55,18 @@ CREATE TABLE recipe_igdt (
     FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id)
 );
 
--- heart 테이블 삭제 및 생성
+-- Heart 테이블 삭제 및 생성
 DROP TABLE IF EXISTS heart CASCADE;
 CREATE TABLE heart (
     fav_id IDENTITY PRIMARY KEY,
     user_email VARCHAR(255),
     rcp_id INT,
     FOREIGN KEY (user_email) REFERENCES Member(user_email),
-    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id)
+    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id),
+    UNIQUE (user_email, rcp_id) -- 한 회원이 동일한 레시피를 중복으로 찜하지 못하도록 UNIQUE 제약 조건 추가
 );
 
--- rcp_and_seq 테이블 삭제 및 생성
+-- Rcp_and_seq 테이블 삭제 및 생성
 DROP TABLE IF EXISTS rcp_and_seq CASCADE;
 CREATE TABLE rcp_and_seq (
     step_id IDENTITY PRIMARY KEY,
@@ -77,6 +77,7 @@ CREATE TABLE rcp_and_seq (
     FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id)
 );
 
+-- Reviews 테이블 삭제 및 생성
 DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE reviews (
     rv_id IDENTITY PRIMARY KEY,
@@ -86,8 +87,10 @@ CREATE TABLE reviews (
     comment TEXT,
     modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_email) REFERENCES member(user_email),
-    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id)
+    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id),
+    UNIQUE (user_email, rcp_id) -- 한 회원이 하나의 레시피에 대해 하나의 리뷰만 작성할 수 있도록 UNIQUE 제약 조건 추가
 );
+
 
 
 INSERT INTO recipes (rcp_id, rcp_name, rcp_cooking_time, rcp_difficulty, rcp_image_URL, rcp_quantities) VALUES (6876357, '닭볶음탕', '60분 이내', '초급', 'https://recipe1.ezmember.co.kr/cache/recipe/2017/09/12/e082636233ee03a012fc656d428df5971.jpg', '3인분');

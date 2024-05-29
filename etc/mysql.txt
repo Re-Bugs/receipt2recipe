@@ -39,7 +39,7 @@ CREATE TABLE recipes (
 
 CREATE TABLE fridge (
     rf_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_email VARCHAR(255),
+    user_email VARCHAR(255) UNIQUE,
     FOREIGN KEY (user_email) REFERENCES member(user_email)
 );
 
@@ -66,7 +66,8 @@ CREATE TABLE heart (
     user_email VARCHAR(255),
     rcp_id BIGINT,
     FOREIGN KEY (user_email) REFERENCES member(user_email),
-    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id)
+    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id),
+    UNIQUE (user_email, rcp_id)
 );
 
 CREATE TABLE rcp_and_seq (
@@ -86,10 +87,12 @@ CREATE TABLE reviews (
     comment TEXT,
     modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_email) REFERENCES member(user_email),
-    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id)
+    FOREIGN KEY (rcp_id) REFERENCES recipes(rcp_id),
+    UNIQUE (user_email, rcp_id)
 );
 
 SET FOREIGN_KEY_CHECKS = 1;
+
 
 
 
