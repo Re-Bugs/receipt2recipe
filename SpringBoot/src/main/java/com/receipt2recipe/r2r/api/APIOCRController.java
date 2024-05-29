@@ -48,8 +48,8 @@ public class APIOCRController {
 
             List<Map<String, Object>> ingredientsList = matchedIngredients.stream().map(ingredient -> {
                 Map<String, Object> ingredientMap = new HashMap<>();
-                ingredientMap.put("igdt_id", ingredient.getIgdtId());
-                ingredientMap.put("igdt_name", ingredient.getIgdtName());
+                ingredientMap.put("igdtId", ingredient.getIgdtId());
+                ingredientMap.put("igdtName", ingredient.getIgdtName());
                 ingredientMap.put("isExist", fridgeIngredients.contains(ingredient));
                 return ingredientMap;
             }).collect(Collectors.toList());
