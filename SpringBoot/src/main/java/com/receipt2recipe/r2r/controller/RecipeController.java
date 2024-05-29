@@ -3,6 +3,7 @@ package com.receipt2recipe.r2r.controller;
 import com.receipt2recipe.r2r.domain.Member;
 import com.receipt2recipe.r2r.domain.Recipe;
 import com.receipt2recipe.r2r.domain.Review;
+import com.receipt2recipe.r2r.dto.RecipeDTO;
 import com.receipt2recipe.r2r.service.HeartService;
 import com.receipt2recipe.r2r.service.RecipeService;
 import com.receipt2recipe.r2r.service.ReviewService;
@@ -95,7 +96,7 @@ public class RecipeController {
             return "redirect:/sign_in";
         }
 
-        List<Recipe> recipes = recipeService.searchRecipesByName(query);
+        List<RecipeDTO> recipes = recipeService.searchRecipesByName(query);
         model.addAttribute("recipes", recipes);
         model.addAttribute("userEmail", member.getUserEmail());
         model.addAttribute("userName", member.getUserName());

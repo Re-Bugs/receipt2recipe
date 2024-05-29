@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +25,11 @@ public class IngredientService {
 
     public Ingredient findByName(String name) {
         return ingredientRepository.findByIgdtName(name).orElseThrow(() -> new IllegalArgumentException("재료를 찾을 수 없습니다: " + name));
+    }
+
+    public Ingredient findById(Long ingredientId) {
+        return ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new NoSuchElementException("Ingredient not found"));
     }
 
     public List<String> findMatchingIngredients(String text) {

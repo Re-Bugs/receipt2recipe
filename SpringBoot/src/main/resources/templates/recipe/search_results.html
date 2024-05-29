@@ -192,16 +192,16 @@
 <div class="recipe-grid">
     <div th:each="recipe, iterStat : ${recipes}" class="recipe-item">
         <div class="order" th:text="${iterStat.index + 1}"></div>
-        <a th:href="@{/recipe/detail/{id}(id=${recipe.id})}">
+        <a th:href="@{/recipe/detail/{id}(id=${recipe.rcpId})}">
             <div class="image-container">
-                <img th:src="@{${recipe.imageUrl}}" alt="레시피 이미지">
+                <img th:src="@{${recipe.rcpImageUrl}}" alt="레시피 이미지">
             </div>
         </a>
-        <a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" th:text="${recipe.name}"></a>
+        <a th:href="@{/recipe/detail/{id}(id=${recipe.rcpId})}" th:text="${recipe.rcpName}"></a>
         <div class="recipe-info">
-            <div><strong>조리 시간:</strong> <span th:text="${recipe.cookingTime}">00:00</span></div>
-            <div><strong>난이도:</strong> <span th:text="${recipe.difficulty}">Easy</span></div>
-            <div><strong>인분:</strong> <span th:text="${recipe.quantities}">1인분</span></div>
+            <div><strong>조리 시간:</strong> <span th:text="${recipe.rcpName}">00:00</span></div>
+            <div><strong>난이도:</strong> <span th:text="${recipe.rcpDifficulty}">Easy</span></div>
+            <div><strong>인분:</strong> <span th:text="${recipe.rcpQuantities}">1인분</span></div>
         </div>
     </div>
 </div>

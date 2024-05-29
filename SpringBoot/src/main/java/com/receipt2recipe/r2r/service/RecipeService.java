@@ -21,14 +21,10 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final ReviewService reviewService;
     private final FridgeService fridgeService;
-    private final RefAndIgdtRepository refAndIgdtRepository;
     public Recipe getRecipeById(Long id) {
         return recipeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid recipe Id:" + id));
     }
 
-    public List<Recipe> searchRecipesByName(String name) {
-        return recipeRepository.findByNameContainingIgnoreCase(name);
-    }
 
     public List<RecipeDTO> getAllRecipeDTOs() {
         List<Long> recipeIds = recipeRepository.findAllRecipeIds(); // 모든 레시피 ID를 가져옴
@@ -96,5 +92,17 @@ public class RecipeService {
                 ingredients,
                 reviews
         );
+    }
+
+    public List<RecipeDTO> searchRecipesByName(String query) {
+        return recipeRepository.findByNameContainingIgnoreCase(query).stream()
+                .map(recipe -> new RecipeDTO(
+                        recipe.getId(),
+                        recipe.getName(),
+                        recipe.getCookingTime(),
+                        recipe.getDifficulty(),
+                        recipe.getImageUrl(),
+                        recipe.getQuantities()))
+                .collect(Collectors.toList());
     }
 }

@@ -10,6 +10,7 @@ import com.receipt2recipe.r2r.service.IngredientService;
 import com.receipt2recipe.r2r.service.RecipeService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MainController {
@@ -94,8 +97,10 @@ public class MainController {
             return "redirect:/my_fridge?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString());
         } catch (UniqueConstraintViolationException e) {
             String errorMessage = "냉장고에 이미 있는 재료는 추가할 수 없습니다.";
+            log.error("{}", e.getMessage());
             return "redirect:/my_fridge?errorMessage=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
+            log.error("{}", e.getMessage());
             return "redirect:/my_fridge?errorMessage=오류가 발생했습니다.";
         }
     }
@@ -107,14 +112,22 @@ public class MainController {
     }
 
     @PostMapping("/delete_ingredient")
-    public String deleteIngredient(@RequestParam("ref_igdt_id") Long refIgdtId, HttpSession session) {
+    public String deleteIngredient(@RequestParam("ingredientId") Long ingredientId, HttpSession session) throws UnsupportedEncodingException {
         Member member = (Member) session.getAttribute("user");
         if (member == null) {
             return "redirect:/sign_in";
         }
 
-        fridgeService.deleteIngredientFromFridge(refIgdtId);
-        return "redirect:/my_fridge";
+        Long fridgeId = member.getFridge().getRfId();
+        try {
+            fridgeService.deleteIngredientFromFridge(fridgeId, ingredientId);
+            String message = "재료가 성공적으로 삭제되었습니다.";
+            return "redirect:/my_fridge?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString());
+        } catch (NoSuchElementException e) {
+            String errorMessage = "해당 재료가 냉장고에 존재하지 않습니다.";
+            log.error("{}", e.getMessage());
+            return "redirect:/my_fridge?errorMessage=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8.toString());
+        }
     }
 
     @GetMapping("/recommend_recipes")

@@ -5,19 +5,27 @@ import com.receipt2recipe.r2r.dto.HeartDTO;
 import com.receipt2recipe.r2r.dto.RecipeDTO;
 import com.receipt2recipe.r2r.dto.RecipeDetailDTO;
 import com.receipt2recipe.r2r.dto.RefAndIgdtDTO;
+import com.receipt2recipe.r2r.exception.UniqueConstraintViolationException;
 import com.receipt2recipe.r2r.service.FridgeService;
 import com.receipt2recipe.r2r.service.HeartService;
+import com.receipt2recipe.r2r.service.IngredientService;
 import com.receipt2recipe.r2r.service.RecipeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -25,6 +33,7 @@ public class ApiMainController {
     private final RecipeService recipeService;
     private final FridgeService fridgeService;
     private final HeartService heartService;
+    private final IngredientService ingredientService;
 
     @GetMapping("/all_rcplist")
     public List<RecipeDTO> getAllRecipes() {
@@ -70,5 +79,108 @@ public class ApiMainController {
                         recipe.getQuantities()))
                 .collect(Collectors.toList());
     }
+
+    @GetMapping("/search_ingredient")
+    public List<Ingredient> searchIngredient(@RequestParam("q") String query) {
+        return ingredientService.searchIngredientsByName(query);
+    }
+
+    @GetMapping("/search_recipe")
+    public List<RecipeDTO> searchRecipes(@RequestParam("q") String query, HttpSession session) {
+        return recipeService.searchRecipesByName(query);
+    }
+
+    @PostMapping("/add_ingredient")
+    public ResponseEntity<Map<String, String>> addIngredient(@RequestParam("q") Long ingredientId, HttpSession session) {
+        Member member = (Member) session.getAttribute("user");
+
+        Long fridgeId = member.getFridge().getRfId();
+        Map<String, String> response = new HashMap<>();
+        try {
+            fridgeService.addIngredientToFridge(fridgeId, ingredientId, LocalDate.now());
+            response.put("message", "Success");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (IllegalArgumentException e) {
+            log.error("{}", e.getMessage());
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("message", e.getMessage());
+            log.error("{}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/delete_ingredients")
+    public ResponseEntity<Map<String, String>> deleteIngredients(@RequestParam("q") List<Long> ingredientIds, HttpSession session) {
+        Member member = (Member) session.getAttribute("user");
+
+        if (member == null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        Long fridgeId = member.getFridge().getRfId();
+        Map<String, String> response = new HashMap<>();
+        try {
+            for (Long ingredientId : ingredientIds) {
+                fridgeService.deleteIngredientFromFridge(fridgeId, ingredientId);
+            }
+            response.put("message", "Success");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NoSuchElementException e) {
+            log.error("{}", e.getMessage());
+            response.put("message", "One or more ingredients not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("message", "Fail");
+            log.error("{}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+
+
+    @PostMapping("/add_heart")
+    public ResponseEntity<Map<String, String>> addHeart(@RequestParam("q") Long recipeId, HttpSession session) {
+        Member member = (Member) session.getAttribute("user");
+
+        Map<String, String> response = new HashMap<>();
+        try {
+            heartService.addFavoriteRecipe(member.getUserEmail(), recipeId);
+            response.put("message", "Success");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (IllegalArgumentException e) {
+            log.error("{}", e.getMessage());
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("message", "Fail");
+            log.error("{}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/delete_heart")
+    public ResponseEntity<Map<String, String>> deleteHeart(@RequestParam("q") Long recipeId, HttpSession session) {
+        Member member = (Member) session.getAttribute("user");
+
+        Map<String, String> response = new HashMap<>();
+        try {
+            heartService.removeFavoriteRecipe(member.getUserEmail(), recipeId);
+            response.put("message", "Success");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (IllegalArgumentException e) {
+            log.error("{}", e.getMessage());
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        } catch (Exception e) {
+            response.put("message", "Fail");
+            log.error("{}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 
 }

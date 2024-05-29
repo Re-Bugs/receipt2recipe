@@ -356,6 +356,7 @@
                 <td class="transparent-border no-background">
                     <form th:action="@{/delete_ingredient}" method="post">
                         <input type="hidden" name="ref_igdt_id" th:value="${item.Id}" />
+                        <input type="hidden" name="ingredientId" th:value="${item.ingredient.getIgdtId()}">
                         <button type="submit" class="custom-button">삭제</button>
                     </form>
                 </td>

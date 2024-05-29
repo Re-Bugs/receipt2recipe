@@ -57,7 +57,7 @@
 - `Member`와 `Fridge`: 1대1(One-to-One) 관계로, 한 회원은 하나의 냉장고만 가질 수 있다.
 - `Fridge`와 `Ref_and_Igdt`: 1대다(One-to-Many) 관계로, 한 냉장고는 여러 재료를 가질 수 있다.
 - `Ingredients`와 Ref_and_Igdt: 1대다(One-to-Many) 관계로, 한 재료는 여러 냉장고 재료에 포함될 수 있다.
-- `Recipes`와 `Rcp_and_Seq`: 1대다(One-to-Many) 관계로, 한 레시피는 여러 조리 단계를 가질 수 있다.
+- `Recipes`와 `Rcp_and_Seq`: 1대다(One-to-Many) 관계로, 한 레시피는 여러 조리 단계를 가질 수 있다.<br>
   ->`Rcp_and_Seq` 테이블의 `rcp_id` 필드는 `Recipes` 테이블의 `rcp_id`를 참조하여 각 조리 단계가 어떤 레시피에 속하는지를 정의.
 - `Recipes`와 `Recipe_Igdt`: 1대다(One-to-Many) 관계로, 한 레시피는 여러 재료를 가질 수 있다.
 - `Ingredients`와 `Recipe_Igdt`: 1대다(One-to-Many) 관계로, 한 재료는 여러 레시피 재료에 포함될 수 있다.
@@ -66,17 +66,17 @@
 - `Member`와 `Reviews`: 1대다(One-to-Many) 관계로, 한 회원은 각 레시피에 대해 하나의 리뷰만 남길 수 있다 (UNIQUE 제약 조건).
 - `Recipes`와 `Reviews`: 1대다(One-to-Many) 관계로, 한 레시피는 여러 리뷰를 받을 수 있다.
 
-
-
 - **다대다 관계는 `Recipe_Igdt`와 `Ref_and_Igdt` 테이블을 통해 구현됨.**
 
-<u>**다대다(Many-to-Many) 관계는 두 테이블 간의 다수의 레코드가 서로 다수의 레코드와 관련될 수 있는 관계를 말한다.**</u> 
-
-예를 들어, 하나의 레시피는 여러 재료를 필요로 하고, 하나의 재료는 여러 레시피에 포함될 수 있다. 이런 관계를 직접 테이블 간에 구현하면 복잡하고, 데이터의 일관성을 유지하기 어렵다. 
-
-그래서 다대다 관계를 구현하기 위해 중간 테이블을 사용한다. 
-
-중간 테이블은 두 테이블 간의 관계를 관리한다.
+> [!TIP]
+>
+> <u>**다대다(Many-to-Many) 관계는 두 테이블 간의 다수의 레코드가 서로 다수의 레코드와 관련될 수 있는 관계를 말한다.**</u> 
+>
+> 예를 들어, 하나의 레시피는 여러 재료를 필요로 하고, 하나의 재료는 여러 레시피에 포함될 수 있다. 이런 관계를 직접 테이블 간에 구현하면 복잡하고, 데이터의 일관성을 유지하기 어렵다. 
+>
+> 그래서 다대다 관계를 구현하기 위해 중간 테이블을 사용한다. 
+>
+> 중간 테이블은 두 테이블 간의 관계를 관리한다.
 
 
 
@@ -86,14 +86,15 @@
 
 ## Tech-Stack
 
-| 분류              | 기술                       |
-| ----------------- | -------------------------- |
-| 서버 환경         | AWS Ubuntu LTS, Amazon RDS |
-| DB                | MySQL                      |
-| Front-End(Web)    | HTML, CSS, JavaScript      |
-| Front-End(Mobile) | Android Native(Kotlin)     |
-| API               | Google Cloud Vision API    |
-| UI                | Figma                      |
+| 분류              | 기술                        |
+| ----------------- | --------------------------- |
+| 서버 환경         | AWS Ubuntu LTS, Amazon RDS  |
+| DB                | MySQL                       |
+| Back-End          | Spring Boot, JPA(Hibernate) |
+| Front-End(Web)    | HTML, CSS, JavaScript       |
+| Front-End(Mobile) | Android Native(Kotlin)      |
+| API               | Google Cloud Vision API     |
+| UI                | Figma                       |
 
 
 

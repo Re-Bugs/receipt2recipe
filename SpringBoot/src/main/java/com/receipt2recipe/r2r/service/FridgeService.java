@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,25 +38,32 @@ public class FridgeService {
     }
 
     public void addIngredientToFridge(Long fridgeId, Long ingredientId, LocalDate purchaseDate) {
-        try {
-            Fridge fridge = fridgeRepository.findById(fridgeId).orElseThrow(() -> new IllegalArgumentException("Invalid fridge ID"));
-            Ingredient ingredient = new Ingredient();
-            ingredient.setIgdtId(ingredientId);
+        Fridge fridge = fridgeRepository.findById(fridgeId).orElseThrow(() -> new IllegalArgumentException("Invalid fridge ID"));
 
-            RefAndIgdt refAndIgdt = new RefAndIgdt();
-            refAndIgdt.setFridge(fridge);
-            refAndIgdt.setIngredient(ingredient);
-            refAndIgdt.setPurchaseDate(java.sql.Date.valueOf(purchaseDate));
-
-            refAndIgdtRepository.save(refAndIgdt);
-        } catch (DataIntegrityViolationException e){
-            throw new UniqueConstraintViolationException("냉장고에 이미 있는 재료는 추가할 수 없습니다.");
+        // 중복 재료 체크
+        boolean ingredientExists = refAndIgdtRepository.findByFridgeRfId(fridgeId).stream()
+                .anyMatch(refAndIgdt -> refAndIgdt.getIngredient().getIgdtId().equals(ingredientId));
+        if (ingredientExists) {
+            throw new IllegalArgumentException("냉장고에 이미 있는 재료는 추가할 수 없습니다.");
         }
+
+        Ingredient ingredient = ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 재료를 찾을 수 없습니다."));
+
+        RefAndIgdt refAndIgdt = new RefAndIgdt();
+        refAndIgdt.setFridge(fridge);
+        refAndIgdt.setIngredient(ingredient);
+        refAndIgdt.setPurchaseDate(java.sql.Date.valueOf(purchaseDate));
+
+        refAndIgdtRepository.save(refAndIgdt);
     }
 
-    public void deleteIngredientFromFridge(Long refIgdtId) {
-        refAndIgdtRepository.deleteById(refIgdtId);
+    public void deleteIngredientFromFridge(Long fridgeId, Long ingredientId) {
+        RefAndIgdt refAndIgdt = refAndIgdtRepository.findByFridgeRfIdAndIngredientIgdtId(fridgeId, ingredientId)
+                .orElseThrow(() -> new NoSuchElementException("재료를 찾을 수 없습니다."));
+        refAndIgdtRepository.delete(refAndIgdt);
     }
+
 
     public List<Recipe> recommendTopRecipesByFridge(Long fridgeId) {
         List<Long> ingredientIds = refAndIgdtRepository.findByFridgeRfId(fridgeId)
