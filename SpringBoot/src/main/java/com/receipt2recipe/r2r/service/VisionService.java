@@ -3,6 +3,7 @@ package com.receipt2recipe.r2r.service;
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -12,12 +13,8 @@ import java.util.List;
 @Service
 public class VisionService {
 
-    public String extractTextFromImageUrl(String imageUrl) throws Exception {
-        URL url = new URL(imageUrl);
-        ByteString imgBytes;
-        try (InputStream in = url.openStream()) {
-            imgBytes = ByteString.readFrom(in);
-        }
+    public String extractTextFromImage(MultipartFile image) throws Exception {
+        ByteString imgBytes = ByteString.readFrom(image.getInputStream());
 
         Image img = Image.newBuilder().setContent(imgBytes).build();
         Feature feat = Feature.newBuilder().setType(Feature.Type.TEXT_DETECTION).build();
@@ -33,8 +30,7 @@ public class VisionService {
             StringBuilder stringBuilder = new StringBuilder();
             for (AnnotateImageResponse res : response.getResponsesList()) {
                 if (res.hasError()) {
-                    System.out.printf("Error: %s\n", res.getError().getMessage());
-                    return "Error detected";
+                    return "Error: " + res.getError().getMessage();
                 }
                 stringBuilder.append(res.getFullTextAnnotation().getText());
             }
