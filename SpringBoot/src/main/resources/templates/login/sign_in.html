@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>R2R-로그인</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #DBDBDB;
+            width: 350px;
+            text-align: center;
+        }
+        .logo {
+            font-family: 'Segoe Script'; /* Similar to Instagram's logo font */
+            font-size: 45px;
+            margin-bottom: 20px;
+        }
+        .form-input {
+            width: 85%;
+            padding: 7px;
+            margin: 10px 0;
+            border: 1px solid #DBDBDB;
+            border-radius: 3px;
+            background-color: #FAFAFA;
+        }
+        .login-btn {
+            width: 90%;
+            padding: 7px;
+            border: none;
+            background-color: #3897F0;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .help-link {
+            display: block;
+            margin-top: 20px;
+            color: #00376B;
+            text-decoration: none;
+            font-size: small;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">Receipt2Recipe</div>
+    <div th:if="${message}" class="success-message" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+    <form th:action="@{/sign_in}" method="post" th:object="${loginMemberDto}">
+        <input type="email" th:field="*{userEmail}" class="form-input" placeholder="이메일" required>
+        <input type="password" th:field="*{userPw}" class="form-input" placeholder="비밀번호" required>
+        <button type="submit" class="login-btn">로그인</button>
+        <a href="#" class="help-link">비밀번호를 잊으셨나요?</a>
+        <a th:href="@{/sign_up}" class="help-link">계정이 없으신가요? 가입하기</a>
+    </form>
+</div>
+</body>
+</html>
