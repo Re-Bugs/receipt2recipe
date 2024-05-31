@@ -56,7 +56,7 @@
 
 - `Member`와 `Fridge`: 1대1(One-to-One) 관계로, 한 회원은 하나의 냉장고만 가질 수 있다.
 - `Fridge`와 `Ref_and_Igdt`: 1대다(One-to-Many) 관계로, 한 냉장고는 여러 재료를 가질 수 있다.
-- `Ingredients`와 Ref_and_Igdt: 1대다(One-to-Many) 관계로, 한 재료는 여러 냉장고 재료에 포함될 수 있다.
+- `Ingredients`와 `Ref_and_Igdt`: 1대다(One-to-Many) 관계로, 한 재료는 여러 냉장고 재료에 포함될 수 있다.
 - `Recipes`와 `Rcp_and_Seq`: 1대다(One-to-Many) 관계로, 한 레시피는 여러 조리 단계를 가질 수 있다.<br>
   ->`Rcp_and_Seq` 테이블의 `rcp_id` 필드는 `Recipes` 테이블의 `rcp_id`를 참조하여 각 조리 단계가 어떤 레시피에 속하는지를 정의.
 - `Recipes`와 `Recipe_Igdt`: 1대다(One-to-Many) 관계로, 한 레시피는 여러 재료를 가질 수 있다.
