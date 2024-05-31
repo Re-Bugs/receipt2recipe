@@ -34,7 +34,7 @@ public class MainController {
 
     @GetMapping("/")
     public String index(HttpSession session, Model model) {
-        return "main/main";
+        return "redirect:/main";
     }
 
     @GetMapping("/main")
