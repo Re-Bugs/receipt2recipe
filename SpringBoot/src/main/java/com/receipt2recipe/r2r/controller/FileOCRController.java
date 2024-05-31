@@ -65,7 +65,7 @@ public class FileOCRController {
             redirectAttributes.addFlashAttribute("fridgeIngredients", fridgeIngredients);
 
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "영수증 인식에 실패하였습니다.");
+            redirectAttributes.addFlashAttribute("errorMessage", "영수증 인식에 실패하였습니다.");
             log.error(e.getMessage(), e);
         }
 
@@ -113,7 +113,7 @@ public class FileOCRController {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public String handleMaxSizeException(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("ErrorMessage", "사진의 크기가 너무 큽니다.");
+        redirectAttributes.addFlashAttribute("errorMessage", "사진의 크기가 너무 큽니다.");
         return "redirect:/receipt/receipt_recognition";
     }
 }

@@ -50,7 +50,7 @@ public class RecipeService {
     }
 
     public List<RecipeDTO> getTop5RecipeDTOs() {
-        List<Recipe> top5Recipes = recipeRepository.findAll(PageRequest.of(0, 5)).getContent();
+        List<Recipe> top5Recipes = recipeRepository.findAll(PageRequest.of(2, 5)).getContent();
         return top5Recipes.stream()
                 .map(r -> new RecipeDTO(
                         r.getId(),
