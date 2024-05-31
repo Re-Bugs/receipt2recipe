@@ -15,9 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -31,8 +29,8 @@ public class APIOCRController {
     private final FridgeService fridgeService;
 
     @PostMapping("/ocr")
-    public ResponseEntity<Map<String, Object>> extractText(@RequestParam("image") MultipartFile image, HttpSession session) {
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<List<Map<String, Object>>> extractText(@RequestParam("image") MultipartFile image, HttpSession session) {
+        List<Map<String, Object>> response = new ArrayList<>();
         try {
             Member member = (Member) session.getAttribute("user");
 
@@ -46,7 +44,7 @@ public class APIOCRController {
             List<Ingredient> fridgeIngredients = fridgeService.getMyIngredients(fridgeId)
                     .stream().map(RefAndIgdt::getIngredient).collect(Collectors.toList());
 
-            List<Map<String, Object>> ingredientsList = matchedIngredients.stream().map(ingredient -> {
+            response = matchedIngredients.stream().map(ingredient -> {
                 Map<String, Object> ingredientMap = new HashMap<>();
                 ingredientMap.put("igdtId", ingredient.getIgdtId());
                 ingredientMap.put("igdtName", ingredient.getIgdtName());
@@ -54,13 +52,12 @@ public class APIOCRController {
                 return ingredientMap;
             }).collect(Collectors.toList());
 
-            response.put("ingredients", ingredientsList);
-
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            response.put("message", "Failed to extract text");
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Failed to extract text");
             log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonList(errorResponse));
         }
     }
 

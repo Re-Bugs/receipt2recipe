@@ -77,7 +77,11 @@ public class FridgeService {
     public List<RefAndIgdtDTO> getAPIMyIngredients(Long fridgeId) {
         List<RefAndIgdt> refAndIgdts = refAndIgdtRepository.findByFridgeRfId(fridgeId);
         return refAndIgdts.stream()
-                .map(refAndIgdt -> new RefAndIgdtDTO(refAndIgdt.getIngredient(), refAndIgdt.getPurchaseDate()))
+                .map(refAndIgdt -> new RefAndIgdtDTO(
+                        refAndIgdt.getIngredient().getIgdtId(),
+                        refAndIgdt.getIngredient().getIgdtName(),
+                        refAndIgdt.getPurchaseDate()))
                 .collect(Collectors.toList());
     }
+
 }

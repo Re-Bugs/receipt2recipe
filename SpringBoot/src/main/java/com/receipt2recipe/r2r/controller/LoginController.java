@@ -25,7 +25,7 @@ public class LoginController {
     @GetMapping("/sign_in")
     public String showLoginForm(Model model) {
         model.addAttribute("loginMemberDto", new LoginMemberDTO());
-        return "/login/sign_in";
+        return "login/sign_in";
     }
 
     @PostMapping("/sign_in")
@@ -45,7 +45,7 @@ public class LoginController {
     @GetMapping("/sign_up")
     public String showRegisterForm(Model model) {
         model.addAttribute("signUpMemberDto", new SignUpMemberDTO());
-        return "/login/sign_up";
+        return "login/sign_up";
     }
 
     @PostMapping("/sign_up")

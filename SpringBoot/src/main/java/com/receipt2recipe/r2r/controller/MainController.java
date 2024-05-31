@@ -33,9 +33,10 @@ public class MainController {
     private final HeartService heartService;
 
     @GetMapping("/")
-    public String homeController(){
+    public String index(HttpSession session, Model model) {
         return "/main/main";
     }
+
     @GetMapping("/main")
     public String showRecipes(HttpSession session, Model model) {
         Member member = (Member) session.getAttribute("user");

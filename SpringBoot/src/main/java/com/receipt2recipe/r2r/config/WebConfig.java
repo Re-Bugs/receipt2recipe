@@ -4,14 +4,17 @@ import com.receipt2recipe.r2r.interceptor.LoginInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-@RequiredArgsConstructor
 
+import java.util.concurrent.TimeUnit;
+
+@RequiredArgsConstructor
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    @Autowired
     private final LoginInterceptor loginInterceptor;
 
     @Override
