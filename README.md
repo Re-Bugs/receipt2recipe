@@ -23,7 +23,7 @@
 | 송기남 | AI소프트웨어 | UI                      |
 | 이창엽 | AI소프트웨어 | Mobile Front-End        |
 
-
+<br>
 
 ### Role
 
@@ -34,21 +34,21 @@
 | UI        | -사용자에게 직관적이고 아름다운 인터페이스를 제공하여 사용 편의성 높이고, 좋은 경험을 할 수 있게 함 |
 | Front-End | -사용자와 직접 상호작용하는 웹과 모바일 애플리케이션의 UI와 UX를 구현하여 사용자 경험을 향상시킴<br />-이를 통해 직관적이고 반응성 높은 인터페이스를 제공하여 사용자 만족도와 접근성을 높임 |
 
-
+<br>
 
 ---
 
-
+<br>
 
 ## Architecture
 
 ![Architecture](images/README/Architecture.png)
 
-
+<br>
 
 ---
 
-
+<br>
 
 ## Database Modelling 
 
@@ -78,11 +78,11 @@
 >
 > 중간 테이블은 두 테이블 간의 관계를 관리한다.
 
-
+<br>
 
 ---
 
-
+<br>
 
 ## Tech-Stack
 
@@ -96,11 +96,11 @@
 | API               | Google Cloud Vision API     |
 | UI                | Figma                       |
 
-
+<br>
 
 ---
 
-
+<br>
 
 ## Design
 
@@ -112,17 +112,17 @@
 
 ![image-20240529235311242](images/README/image-20240529235311242.png)
 
-
+<br>
 
 ### Mobile
 
 
 
-
+<br>
 
 ---
 
-
+<br>
 
 ### 레시피 추천 핵심코드
 
@@ -141,40 +141,47 @@
 >
 > #### JPQL
 >
-> SELECT r FROM Recipe r:
-> -Recipe 엔터티를 r이라는 별칭으로 선택한다.
+> SELECT r FROM Recipe r:<br>
+> -Recipe 엔터티를 r이라는 별칭으로 선택한다.<br>
 >
-> JOIN RecipeIgdt ri ON r.id = ri.recipe.id:
-> -Recipe와 RecipeIgdt 엔터티를 조인하여, 레시피와 관련된 재료 정보를 가져온다.
+> <br>
 >
-> WHERE ri.ingredient.id IN
-> -ingredientIds 목록에 포함된 재료를 가진 레시피를 필터링한다.
-> -:ingredientIds는 메서드 호출 시 전달되는 파라미터이다.
+> JOIN RecipeIgdt ri ON r.id = ri.recipe.id:<br>
+> -Recipe와 RecipeIgdt 엔터티를 조인하여, 레시피와 관련된 재료 정보를 가져온다.<br>
 >
-> AND EXISTS (SELECT 1 FROM RecipeIgdt rii WHERE rii.recipe.id = r.id AND rii.id = (SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id) AND rii.ingredient.id IN
-> )
-> -서브쿼리를 사용하여, 해당 레시피에 최소 하나 이상의 지정된 재료가 포함되어 있는지 확인한다.
-> -rii.id = (SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id)는 해당 레시피의 첫 번째 재료 ID를 찾는 조건이다.
+> <br>
 >
-> GROUP BY r.id
-> -레시피 ID별로 그룹화하여 동일한 레시피의 재료들을 묶는다.
+> WHERE ri.ingredient.id IN<br>
+> -ingredientIds 목록에 포함된 재료를 가진 레시피를 필터링한다.<br>
+> -:ingredientIds는 메서드 호출 시 전달되는 파라미터이다.<br>
 >
-> ORDER BY COUNT(ri.ingredient.id) DESC:
-> -각 레시피에 포함된 재료의 수를 기준으로 내림차순으로 정렬한다. 즉, 더 많은 재료를 포함한 레시피가 상위에 위치하게 된다.
+> <br>
 >
-> 
+> AND EXISTS (SELECT 1 FROM RecipeIgdt rii WHERE rii.recipe.id = r.id AND rii.id = (SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id) AND rii.ingredient.id IN)<br>
+> -서브쿼리를 사용하여, 해당 레시피에 최소 하나 이상의 지정된 재료가 포함되어 있는지 확인한다.<br>
+> -rii.id = (SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id)는 해당 레시피의 첫 번째 재료 ID를 찾는 조건이다.<br>
+>
+> <br>
+>
+> GROUP BY r.id<br>
+> -레시피 ID별로 그룹화하여 동일한 레시피의 재료들을 묶는다.<br>
+>
+> <br>
+>
+> ORDER BY COUNT(ri.ingredient.id) DESC<br>
+> -각 레시피에 포함된 재료의 수를 기준으로 내림차순으로 정렬한다. 즉, 더 많은 재료를 포함한 레시피가 상위에 위치하게 된다.<br>
+>
+> <br>
 >
 > Recipe 엔터티는 recipes 테이블에 매핑된다.
 > RecipeIgdt 엔터티는 recipe_igdt 테이블에 매핑된다.
 > Ingredient 엔터티는 ingredients 테이블에 매핑된다.
 
-
+<br>
 
 ---
 
-
-
-
+<br>
 
 ## API
 
@@ -182,9 +189,11 @@
 >
 > BASE URL : https://r2-r.com/
 
-
+<br>
 
 ------
+
+<br>
 
 ### Login
 
@@ -201,7 +210,7 @@
 }
 ```
 
-
+<br>
 
 #### 응답
 
@@ -231,7 +240,11 @@
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 회원가입
 
@@ -250,7 +263,7 @@
 }
 ```
 
-
+<br>
 
 #### 응답
 
@@ -270,7 +283,11 @@
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### Logout
 
@@ -285,7 +302,7 @@
  로그인된 세션의 쿠키가 자동으로 포함
 ```
 
-
+<br>
 
 #### 응답
 
@@ -301,7 +318,11 @@
 존재하지 않음
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 세션 확인
 
@@ -311,7 +332,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 #### 응답
 
@@ -330,7 +351,11 @@
 {"message": "Session is invalid"}
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 세션이 만료되었거나, 없을 때 응답(권한 부족)
 
@@ -340,7 +365,11 @@
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 모든 레시피 리스트
 
@@ -350,7 +379,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 ### 응답
 
@@ -384,7 +413,11 @@
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 5개 레시피 리스트
 
@@ -394,7 +427,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 #### 응답
 
@@ -443,7 +476,11 @@
 ]
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 나의 냉장고에 저장된 재료
 
@@ -453,7 +490,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 #### 응답
 
@@ -487,7 +524,11 @@
 ]
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 나의 찜 목록
 
@@ -497,7 +538,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 #### 응답
 
@@ -522,7 +563,11 @@
 ]
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 레시피 상세정보
 
@@ -532,7 +577,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 #### 응답
 
@@ -625,7 +670,11 @@
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 레시피 추천
 
@@ -635,7 +684,7 @@
 
 메서드 : `GET`
 
-
+<br>
 
 #### 응답
 
@@ -692,7 +741,11 @@
 ]
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 레시피 검색
 
@@ -706,7 +759,7 @@
 
 <u>ex)/api/search_recipe?q=김치</u>
 
-
+<br>
 
 #### 응답
 
@@ -764,7 +817,11 @@
 ]
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 재료 검색
 
@@ -778,7 +835,7 @@
 
 <u>ex)/api/search_ingredient?q=감자</u>
 
-
+<br>
 
 #### 응답
 
@@ -803,7 +860,11 @@
 ]
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 냉장고에 재료 추가
 
@@ -819,7 +880,7 @@
 
 123은 재료 테이블의 igdt_id
 
-
+<br>
 
 #### 응답
 
@@ -847,7 +908,11 @@ igdt_id 값 오류
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 냉장고에 재료 삭제
 
@@ -865,7 +930,7 @@ igdt_id 값 오류
 
 123은 재료 테이블의 igdt_id
 
-
+<br>
 
 #### 응답
 
@@ -885,7 +950,11 @@ igdt_id 값 오류
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 찜 목록 추가
 
@@ -901,7 +970,7 @@ igdt_id 값 오류
 
 3568149은 레시피 테이블의 rcp_id
 
-
+<br>
 
 #### 응답
 
@@ -929,7 +998,11 @@ rcp_id 값 오류
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 찜 목록 삭제
 
@@ -945,7 +1018,7 @@ rcp_id 값 오류
 
 3686217은 레시피 테이블의 rcp_id
 
-
+<br>
 
 #### 응답
 
@@ -965,7 +1038,11 @@ rcp_id 값 오류
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 리뷰 삭제
 
@@ -988,7 +1065,7 @@ rcp_id 값 오류
 }
 ```
 
-
+<br>
 
 #### 응답
 
@@ -1016,7 +1093,11 @@ rcp_id 값 오류
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### OCR
 
@@ -1063,7 +1144,7 @@ Choose Files 버튼을 클릭하여 업로드할 이미지를 선택한다.
 서버에서 처리된 응답을 Response 섹션에서 확인할 수 있다. 성공적으로 처리되었다면, 서버에서 추출된 텍스트가 포함된 JSON 응답을 확인할 수 있다.
 ```
 
-
+<br>
 
 #### 응답
 
@@ -1115,7 +1196,11 @@ Choose Files 버튼을 클릭하여 업로드할 이미지를 선택한다.
 }
 ```
 
+<br>
 
+---
+
+<br>
 
 ### 영수증 인식 재료 추가
 
@@ -1131,7 +1216,7 @@ Choose Files 버튼을 클릭하여 업로드할 이미지를 선택한다.
 
 2,7,208,6,31은 재료 테이블의 igdt_id
 
-
+<br>
 
 #### 응답
 
