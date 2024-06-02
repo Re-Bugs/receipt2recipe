@@ -212,7 +212,7 @@
 
 <br>
 
-#### 응답
+#### *응답*
 
 성공
 
@@ -309,7 +309,9 @@
 성공
 
 ```json
-{"message": "Logout successful"}
+{
+  "message": "Logout successful"
+}
 ```
 
 실패
@@ -340,15 +342,17 @@
 
 ```json
 {
-"message": "Session is valid", 
-"userEmail": "test@test"
+  "message": "Session is valid", 
+  "userEmail": "test@test"
 }
 ```
 
 실패
 
 ```json
-{"message": "Session is invalid"}
+{
+  "message": "Session is invalid"
+}
 ```
 
 <br>
@@ -381,7 +385,7 @@
 
 <br>
 
-### 응답
+### 응답 예시
 
 ```json
 [
@@ -429,7 +433,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 [
@@ -492,7 +496,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 [
@@ -540,7 +544,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 [
@@ -579,7 +583,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 {
@@ -686,7 +690,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 [
@@ -761,7 +765,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 [
@@ -837,7 +841,7 @@
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 ```json
 [
@@ -1044,7 +1048,7 @@ rcp_id 값 오류
 
 <br>
 
-### 리뷰 삭제
+### 리뷰 추가
 
 #### 요청
 
@@ -1146,7 +1150,7 @@ Choose Files 버튼을 클릭하여 업로드할 이미지를 선택한다.
 
 <br>
 
-#### 응답
+#### 응답 예시
 
 성공
 

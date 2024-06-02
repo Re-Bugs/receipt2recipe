@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -19,51 +21,69 @@ public class ApiLoginController {
     private final MemberService memberService;
 
     @PostMapping("/sign_in")
-    public ResponseEntity<String> signIn(@RequestBody LoginMemberDTO loginMemberDto, HttpSession session) {
+    public ResponseEntity<Map<String, String>> signIn(@RequestBody LoginMemberDTO loginMemberDto, HttpSession session) {
         Optional<Member> memberOptional = memberService.findByUserEmail(loginMemberDto.getUserEmail());
+
+        Map<String, String> response = new HashMap<>();
 
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
             if (member.getUserPw().equals(loginMemberDto.getUserPw())) {
                 session.setAttribute("user", member);
-                return ResponseEntity.ok("{\"message\": \"Login successful\"}");
+                response.put("message", "Login successful");
+                return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Invalid credentials\"}");
+                response.put("message", "Invalid credentials");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"User not found\"}");
+            response.put("message", "User not found");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
 
     @PostMapping("/sign_up")
-    public ResponseEntity<String> signUp(@RequestBody SignUpMemberDTO signUpMemberDto) {
+    public ResponseEntity<Map<String, String>> signUp(@RequestBody SignUpMemberDTO signUpMemberDto) {
         Member member = new Member(
                 signUpMemberDto.getUserEmail(),
                 signUpMemberDto.getUserName(),
                 signUpMemberDto.getUserPw(),
                 signUpMemberDto.getUserPhone()
         );
+
+        Map<String, String> response = new HashMap<>();
+
         if (memberService.signUp(member)) {
-            return ResponseEntity.ok("{\"message\": \"Sign up successful\"}");
+            response.put("message", "Sign up successful");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Sign up failed\"}");
+            response.put("message", "Sign up failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @PostMapping("/sign_out")
-    public ResponseEntity<String> signOut(HttpSession session) {
+    public ResponseEntity<Map<String, String>> signOut(HttpSession session) {
         session.invalidate();
-        return ResponseEntity.ok("{\"message\": \"Sign out successful\"}");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Sign out successful");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/check_session")
-    public ResponseEntity<String> checkSession(HttpSession session) {
+    public ResponseEntity<Map<String, Object>> checkSession(HttpSession session) {
         Member member = (Member) session.getAttribute("user");
+        Map<String, Object> response = new HashMap<>();
+
         if (member != null) {
-            String responseJson = String.format("{\"message\": \"Session is valid\", \"userEmail\": \"%s\"}", member.getUserEmail());
-            return ResponseEntity.ok(responseJson);
+            response.put("message", "Session is valid");
+            response.put("userEmail", member.getUserEmail());
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"message\": \"Session is invalid\"}");
+            response.put("message", "Session is invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
     }
 }

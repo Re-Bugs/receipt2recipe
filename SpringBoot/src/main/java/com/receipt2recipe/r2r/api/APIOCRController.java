@@ -79,6 +79,7 @@ public class APIOCRController {
             response.put("message", "success");
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            log.error(e.getMessage());
             response.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
