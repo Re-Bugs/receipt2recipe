@@ -200,7 +200,7 @@
         <a th:href="@{/recipe/detail/{id}(id=${recipe.rcpId})}" th:text="${recipe.rcpName}"></a>
         <div class="recipe-info">
             <div><strong>조리 시간:</strong> <span th:text="${recipe.rcpCookingTime}">00:00</span></div>
-            <div><strong>난이도:</strong> <span th:text="${recipe.rcpCookingTime}">Easy</span></div>
+            <div><strong>난이도:</strong> <span th:text="${recipe.rcpDifficulty}">Easy</span></div>
             <div><strong>인분:</strong> <span th:text="${recipe.rcpQuantities}">1인분</span></div>
         </div>
     </div>

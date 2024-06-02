@@ -96,7 +96,7 @@ public class MainController {
             fridgeService.addIngredientToFridge(fridgeId, ingredientId, LocalDate.now());
             String message = "재료가 성공적으로 추가되었습니다.";
             return "redirect:/my_fridge?message=" + URLEncoder.encode(message, StandardCharsets.UTF_8.toString());
-        } catch (UniqueConstraintViolationException e) {
+        } catch (IllegalArgumentException e) {
             String errorMessage = "냉장고에 이미 있는 재료는 추가할 수 없습니다.";
             log.error("{}", e.getMessage());
             return "redirect:/my_fridge?errorMessage=" + URLEncoder.encode(errorMessage, StandardCharsets.UTF_8.toString());
