@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommended Recipes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #DBDBDB;
+            height: 60px;
+        }
+        .logo {
+            font-family: 'Segoe Script';
+            font-size: 30px;
+            margin-right: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .search-bar-container {
+            display: flex;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 5px 10px;
+            width: 100%;
+        }
+        .search-bar input[type="text"] {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 25px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .search-icon {
+            margin-right: 10px;
+        }
+        .buttons {
+            display: flex;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+        }
+        .buttons button {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+        .user-details div {
+            margin: 2px 0;
+        }
+        .logout-btn {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: black;
+            color: white;
+        }
+        .recipe-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .recipe-item {
+            display: flex;
+            align-items: center;
+            background-color: #EEEEEE;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: black;
+            position: relative;
+        }
+        .recipe-item:hover {
+            background-color: #DDDDDD;
+        }
+        .recipe-item img {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+        .recipe-item div {
+            display: flex;
+            flex-direction: column;
+        }
+        .recipe-item h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .recipe-item p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+        .container {
+            max-width: 800px; /* 컨테이너 너비를 줄이기 위해 추가 */
+            margin: 0 auto;
+        }
+        .recipe-number {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #000;
+            color: #FFF;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="/main" class="logo">R2R</a>
+    <div class="search-bar-container">
+        <form class="search-bar" action="/recipe/search" method="GET">
+            <button type="submit" class="search-icon">
+                <img th:src="@{/images/search_img.png}" alt="Search" width="20">
+            </button>
+            <input type="text" name="q" placeholder="검색어를 입력해주세요." required>
+        </form>
+    </div>
+    <div class="buttons">
+        <a href="/receipt/receipt_recognition"><button type="button">영수증 인식</button></a>
+        <a href="/my_fridge"><button type="button">나의 냉장고</button></a>
+        <a href="/recommend_recipes"><button type="button">레시피 추천</button></a>
+        <a href="https://github.com/Re-Bugs/receipt2recipe" target="_blank"><button type="button">GitHub</button></a>
+    </div>
+    <div class="user-info">
+        <img th:src="@{/images/profile.png}" alt="Profile Icon">
+        <div class="user-details">
+            <div th:text="${userEmail}"></div>
+            <div th:text="${userName} + ' 님'"></div>
+        </div>
+        <a href="/sign_out" class="logout-btn">로그아웃</a>
+    </div>
+</div>
+
+<div class="container">
+    <ul class="recipe-list">
+        <li th:each="recipe, iterStat : ${recommendedRecipes}">
+            <a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" class="recipe-item">
+                <div class="recipe-number" th:text="${iterStat.index + 1}"></div>
+                <img th:src="@{${recipe.imageUrl}}" alt="Recipe Image">
+                <div>
+                    <h2 th:text="${recipe.name}">레시피 이름</h2>
+                    <p>조리시간: <span th:text="${recipe.cookingTime}"></span></p>
+                    <p>난이도: <span th:text="${recipe.difficulty}"></span></p>
+                    <p>인분: <span th:text="${recipe.quantities}"></span></p>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recipe Detail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #DBDBDB;
+            height: 60px;
+        }
+        .logo {
+            font-family: 'Segoe Script';
+            font-size: 30px;
+            margin-right: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .search-bar-container {
+            display: flex;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 5px 10px;
+            width: 100%;
+        }
+        .search-bar input[type="text"] {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 25px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .search-icon {
+            margin-right: 10px;
+        }
+        .buttons {
+            display: flex;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+        }
+        .buttons button {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+        .user-details div {
+            margin: 2px 0;
+        }
+        .logout-btn {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: black;
+            color: white;
+        }
+        .recipe-detail {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        .recipe-detail h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .recipe-detail img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 0 auto 20px auto;
+        }
+        .recipe-detail table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .recipe-detail table, th, td {
+            border: 1px solid #DBDBDB;
+        }
+        .recipe-detail th {
+            background-color: black;
+            color: white;
+            padding: 10px;
+        }
+        .recipe-detail th, td {
+            text-align: center;
+        }
+        .recipe-detail td {
+            padding: 10px;
+        }
+        .recipe-detail h3 {
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+        .recipe-detail ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .recipe-detail ul li {
+            padding: 10px;
+            border-bottom: 1px solid #DBDBDB;
+        }
+        .recipe-detail ul li:last-child {
+            border-bottom: none;
+        }
+        .back-button {
+            display: block;
+            margin: 20px auto 0 auto;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #555;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: #f0ad4e;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .ingredient-present {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .ingredient-absent {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .like-button {
+            background-color: #FF6347;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        .like-button:hover {
+            background-color: #FF4500;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* 기본적으로 숨김 */
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .visible {
+            display: block;
+        }
+        .review-section {
+            margin-top: 40px;
+            background-color: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        .review-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .review-form label {
+            font-weight: bold;
+        }
+        .review-form select, .review-form textarea {
+            padding: 10px;
+            border: 1px solid #DBDBDB;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .review-form button {
+            align-self: flex-start;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .review-form button:hover {
+            background-color: #555;
+        }
+        .review-list {
+            margin-top: 30px;
+        }
+        .review-item {
+            padding: 10px;
+            border-bottom: 1px solid #DBDBDB;
+        }
+        .review-item p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="/main" class="logo">R2R</a>
+    <div class="search-bar-container">
+        <form class="search-bar" action="/recipe/search" method="GET">
+            <button type="submit" class="search-icon">
+                <img th:src="@{/images/search_img.png}" alt="Search" width="20">
+            </button>
+            <input type="text" name="q" placeholder="검색어를 입력해주세요." required>
+        </form>
+    </div>
+    <div class="buttons">
+        <a href="/receipt/receipt_recognition"><button type="button">영수증 인식</button></a>
+        <a href="/my_fridge"><button type="button">나의 냉장고</button></a>
+        <a href="/recommend_recipes"><button type="button">레시피 추천</button></a>
+        <a href="https://github.com/Re-Bugs/receipt2recipe" target="_blank"><button type="button">GitHub</button></a>
+    </div>
+    <div class="user-info">
+        <img th:src="@{/images/profile.png}" alt="Profile Icon">
+        <div class="user-details">
+            <div th:text="${userEmail}"></div>
+            <div th:text="${userName} + ' 님'"></div>
+        </div>
+        <a href="/sign_out" class="logout-btn">로그아웃</a>
+    </div>
+</div>
+
+<div class="recipe-detail">
+    <h1 th:text="${recipe.name}">Recipe Name</h1>
+    <img th:src="@{${recipe.imageUrl}}" alt="레시피 이미지">
+    <table>
+        <thead>
+        <tr>
+            <th>조리 시간</th>
+            <th>난이도</th>
+            <th>인분</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${recipe.cookingTime}">00:00</td>
+            <td th:text="${recipe.difficulty}">Easy</td>
+            <td th:text="${recipe.quantities}">1인분</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form th:action="@{/like_recipe}" method="post">
+        <input type="hidden" name="recipeId" th:value="${recipe.id}" />
+        <button type="submit" class="like-button">찜하기</button>
+    </form>
+
+    <div th:if="${message}" class="message success visible" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="message error visible" th:text="${errorMessage}"></div>
+
+    <br>
+    <div>
+        <h3>재료</h3>
+        <b><p>초록색은 냉장고에 있는 재료이고, 빨간색은 냉장고에 없는 재료입니다.</p></b>
+        <table>
+            <thead>
+            <tr>
+                <th>재료명</th>
+                <th>양(quantity)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ingredient : ${recipe.recipeIgdts}">
+                <td th:text="${ingredient.ingredient.igdtName}"
+                    th:classappend="${#lists.contains(fridgeIngredients, ingredient.ingredient.igdtName)} ? 'ingredient-present' : 'ingredient-absent'">
+                    Ingredient Name
+                </td>
+                <td th:text="${ingredient.amount}">Amount</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div>
+        <h3>조리 단계</h3>
+        <ul>
+            <li th:each="step : ${recipe.steps}">
+                <div>
+                    <span class="step-number" th:text="${step.stepNumber}">1</span>
+                    <span th:text="${step.description}">Description</span>
+                    <img th:src="@{${step.stepUrl}}" alt="단계별 이미지" th:if="${step.stepUrl}">
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<br>
+<div class="review-section">
+    <h2>리뷰 목록</h2>
+    <div class="review-list" th:each="review : ${reviews}">
+        <div class="review-item">
+            <p><strong th:text="${review.userEmail}">user@example.com</strong> -
+                <span th:text="${review.formattedModifiedDate}">날짜</span> -
+                <span th:each="star : ${#numbers.sequence(1, review.rating)}">★</span></p>
+            <p th:text="${review.comment}">Review comment</p>
+        </div>
+    </div>
+    <h2>리뷰 작성</h2>
+    <form th:action="@{/recipe/{id}/review(id=${recipe.id})}" method="post" class="review-form">
+        <label for="rating">평점</label>
+        <select id="rating" name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5" selected>5</option>
+        </select>
+        <label for="comment">댓글</label>
+        <textarea id="comment" name="comment" rows="4" cols="50" required></textarea>
+        <div th:if="${errorMessage}" class="message error visible" th:text="${errorMessage}"></div>
+        <button type="submit">리뷰 작성</button>
+    </form>
+</div>
+
+</body>
+</html>

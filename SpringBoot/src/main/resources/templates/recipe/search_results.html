@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>R2R - 검색 결과</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #DBDBDB;
+            height: 60px;
+        }
+        .logo {
+            font-family: 'Segoe Script';
+            font-size: 30px;
+            margin-right: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .search-bar-container {
+            display: flex;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 5px 10px;
+            width: 100%;
+        }
+        .search-bar input[type="text"] {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 25px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .search-icon {
+            margin-right: 10px;
+        }
+        .buttons {
+            display: flex;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+        }
+        .buttons button {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+        .user-details div {
+            margin: 2px 0;
+        }
+        .logout-btn {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: black;
+            color: white;
+        }
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .recipe-item {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .recipe-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .recipe-item .image-container {
+            width: 100%;
+            height: 200px; /* 이미지 높이를 고정 */
+            overflow: hidden;
+        }
+        .recipe-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지가 컨테이너에 맞게 조정됨 */
+            border-radius: 10px;
+        }
+        .recipe-item .order {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .recipe-item a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .recipe-item a:hover {
+            color: #555;
+        }
+        .recipe-info {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .recipe-info div {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <a href="/main" class="logo">R2R</a>
+    <div class="search-bar-container">
+        <form class="search-bar" action="/recipe/search" method="GET">
+            <button type="submit" class="search-icon">
+                <img th:src="@{/images/search_img.png}" alt="Search" width="20">
+            </button>
+            <input type="text" name="q" placeholder="검색어를 입력해주세요." required>
+        </form>
+    </div>
+    <div class="buttons">
+        <a href="/receipt/receipt_recognition"><button type="button">영수증 인식</button></a>
+        <a href="/my_fridge"><button type="button">나의 냉장고</button></a>
+        <a href="/recommend_recipes"><button type="button">레시피 추천</button></a>
+        <a href="https://github.com/Re-Bugs/receipt2recipe" target="_blank"><button type="button">GitHub</button></a>
+    </div>
+    <div class="user-info">
+        <img th:src="@{/images/profile.png}" alt="Profile Icon">
+        <div class="user-details">
+            <div th:text="${userEmail}"></div>
+            <div th:text="${userName} + ' 님'"></div>
+        </div>
+        <a href="/sign_out" class="logout-btn">로그아웃</a>
+    </div>
+</div>
+<div class="recipe-grid">
+    <div th:each="recipe, iterStat : ${recipes}" class="recipe-item">
+        <div class="order" th:text="${iterStat.index + 1}"></div>
+        <a th:href="@{/recipe/detail/{id}(id=${recipe.rcpId})}">
+            <div class="image-container">
+                <img th:src="@{${recipe.rcpImageUrl}}" alt="레시피 이미지">
+            </div>
+        </a>
+        <a th:href="@{/recipe/detail/{id}(id=${recipe.rcpId})}" th:text="${recipe.rcpName}"></a>
+        <div class="recipe-info">
+            <div><strong>조리 시간:</strong> <span th:text="${recipe.rcpName}">00:00</span></div>
+            <div><strong>난이도:</strong> <span th:text="${recipe.rcpDifficulty}">Easy</span></div>
+            <div><strong>인분:</strong> <span th:text="${recipe.rcpQuantities}">1인분</span></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

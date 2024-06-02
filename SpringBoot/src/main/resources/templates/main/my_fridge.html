@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>R2R - 나의 냉장고</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #DBDBDB;
+            height: 60px; /* 배경 도형 높이 */
+        }
+        .logo {
+            font-family: 'Segoe Script';
+            font-size: 30px;
+            margin-right: 20px;
+        }
+        .search-bar-container {
+            display: flex;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 5px 10px;
+            width: 100%;
+        }
+        .search-bar input[type="text"] {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 25px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .search-icon {
+            margin-right: 10px;
+        }
+        .buttons {
+            display: flex;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+        }
+        .buttons button {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+        .user-details div {
+            margin: 2px 0;
+        }
+        .logout-btn {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            color: black;
+        }
+        .logout-btn:hover {
+            background-color: black;
+            color: white;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .vertical-line {
+            width: 1px;
+            background-color: #DBDBDB;
+            margin: 0 20px;
+        }
+        .form-container {
+            width: 48%;
+            margin-right: 20px; /* 여유 공간 추가 */
+        }
+        .table-container {
+            width: 48%;
+            margin-left: 20px; /* 여유 공간 추가 */
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="text"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        select {
+            max-height: 150px; /* 최대 높이를 설정하여 스크롤이 가능하도록 함 */
+            overflow-y: auto;
+        }
+        .custom-button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .custom-button:hover {
+            background-color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .transparent-border {
+            border: 1px solid transparent;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* 기본적으로 숨김 */
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .no-background {
+            background-color: transparent !important;
+        }
+        .visible {
+            display: block;
+        }
+        .recipe-card {
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .recipe-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+        .recipe-info {
+            flex-grow: 1;
+        }
+        .recipe-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .recipe-details {
+            margin: 5px 0;
+            color: #555;
+        }
+    </style>
+    <script>
+        function searchIngredient() {
+            const query = document.getElementById('searchQuery').value;
+            fetch(`/search_ingredient?q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('ingredientSelect');
+                    select.innerHTML = '';
+                    data.forEach(ingredient => {
+                        const option = document.createElement('option');
+                        option.value = ingredient.igdtId;  // 수정: ingredient.id -> ingredient.igdtId
+                        option.textContent = ingredient.igdtName;  // 수정: ingredient.name -> ingredient.igdtName
+                        select.appendChild(option);
+                    });
+                });
+        }
+
+        function setIngredientId() {
+            const ingredientSelect = document.getElementById('ingredientSelect');
+            const ingredientIdInput = document.getElementById('ingredientId');
+            ingredientIdInput.value = ingredientSelect.value;
+        }
+
+        function validateIngredientSelection() {
+            const ingredientSelect = document.getElementById('ingredientSelect');
+            const errorDiv = document.getElementById('ingredientSelectionError');
+            if (ingredientSelect.value === "" || ingredientSelect.value === "undefined") {
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="header">
+    <a href="/main" class="logo">R2R</a>
+    <div class="search-bar-container">
+        <form class="search-bar" action="/recipe/search" method="GET">
+            <button type="submit" class="search-icon">
+                <img th:src="@{/images/search_img.png}" alt="Search" width="20">
+            </button>
+            <input type="text" name="q" placeholder="검색어를 입력해주세요." required>
+        </form>
+    </div>
+    <div class="buttons">
+        <a href="/receipt/receipt_recognition"><button type="button">영수증 인식</button></a>
+        <a href="/my_fridge"><button type="button">나의 냉장고</button></a>
+        <a href="/recommend_recipes"><button type="button">레시피 추천</button></a>
+        <a href="https://github.com/Re-Bugs/receipt2recipe" target="_blank"><button type="button">GitHub</button></a>
+    </div>
+    <div class="user-info">
+        <img th:src="@{/images/profile.png}" alt="Profile Icon">
+        <div class="user-details">
+            <div th:text="${userEmail}"></div>
+            <div th:text="${userName} + ' 님'"></div>
+        </div>
+        <a href="/sign_out" class="logout-btn">로그아웃</a>
+    </div>
+</div>
+<div class="container">
+    <div class="form-container">
+        <h1>재료 추가</h1>
+
+        <!-- 메시지 표시 영역 -->
+        <div th:if="${message}" th:text="${message}" class="message success visible"></div>
+        <div th:if="${errorMessage}" th:text="${errorMessage}" class="message error visible"></div>
+        <div id="ingredientSelectionError" class="message error" style="display: none;">재료를 선택하지 않았습니다.</div>
+
+        <!-- 재료 검색 폼 -->
+        <form onsubmit="event.preventDefault(); searchIngredient();">
+            <label for="searchQuery">재료 검색</label>
+            <input type="text" id="searchQuery" name="searchQuery" required>
+            <button type="submit" class="custom-button">검색</button>
+        </form>
+
+        <!-- 검색 결과 -->
+        <select id="ingredientSelect" size="5" required>
+            <!-- 검색된 재료 옵션이 여기에 추가됩니다. -->
+        </select><br><br>
+
+        <!-- 재료 추가 폼 -->
+        <form th:action="@{/add_ingredient}" method="post" onsubmit="return validateIngredientSelection();">
+            <input type="hidden" id="ingredientId" name="ingredientId" />
+            <button type="submit" class="custom-button" onclick="setIngredientId();">재료 추가</button>
+        </form>
+
+        <br>
+        <h1>찜한 레시피</h1>
+        <div th:each="favorite : ${favoriteRecipes}" class="recipe-card">
+            <img th:src="${favorite.recipe.imageUrl}" alt="Recipe Image">
+            <div class="recipe-info">
+                <a th:href="@{'/recipe/detail/' + ${favorite.recipe.id}}" class="recipe-title" th:text="${favorite.recipe.name}"></a>
+                <div class="recipe-details">
+                    <p>조리시간: <span th:text="${favorite.recipe.cookingTime}"></span></p>
+                    <p>난이도: <span th:text="${favorite.recipe.difficulty}"></span></p>
+                    <p>인분: <span th:text="${favorite.recipe.quantities}"></span></p>
+                </div>
+            </div>
+            <form th:action="@{/remove_favorite}" method="post">
+                <input type="hidden" name="recipeId" th:value="${favorite.recipe.id}" />
+                <button type="submit" class="custom-button">삭제</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="vertical-line"></div> <!-- 세로선 추가 -->
+
+    <div class="table-container">
+        <h1>나의 냉장고에 있는 재료</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>이름</th>
+                <th>등록일</th>
+                <th class="transparent-border no-background"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${myIngredients}">
+                <td th:text="${item.ingredient.igdtName}"></td>
+                <td th:text="${#dates.format(item.purchaseDate, 'yy-MM-dd')}"></td>
+                <td class="transparent-border no-background">
+                    <form th:action="@{/delete_ingredient}" method="post">
+                        <input type="hidden" name="ref_igdt_id" th:value="${item.Id}" />
+                        <input type="hidden" name="ingredientId" th:value="${item.ingredient.getIgdtId()}">
+                        <button type="submit" class="custom-button">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

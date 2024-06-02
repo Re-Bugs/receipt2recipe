@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영수증 인식 결과</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #FAFAFA;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #FFFFFF;
+            border-bottom: 1px solid #DBDBDB;
+            height: 60px;
+        }
+        .logo {
+            font-family: 'Segoe Script';
+            font-size: 30px;
+            margin-right: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        .search-bar-container {
+            display: flex;
+            flex-grow: 1;
+            margin-right: 20px;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 5px 10px;
+            width: 100%;
+        }
+        .search-bar input[type="text"] {
+            border: none;
+            outline: none;
+            font-size: 16px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 25px;
+        }
+        .search-bar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+        .search-icon {
+            margin-right: 10px;
+        }
+        .buttons {
+            display: flex;
+            align-items: center;
+        }
+        .buttons a {
+            text-decoration: none;
+        }
+        .buttons button {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .buttons button:hover {
+            background-color: black;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+        .user-details div {
+            margin: 2px 0;
+        }
+        .logout-btn {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 25px;
+            padding: 7px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: black;
+            color: white;
+        }
+        .upload-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+        }
+        .upload-form h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .upload-form input[type="file"] {
+            padding: 10px;
+            margin: 20px 0;
+        }
+        .upload-form button {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .upload-form button:hover {
+            background-color: #555;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .message.visible {
+            display: block;
+        }
+        .ingredient-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .ingredient-list h3 {
+            margin-bottom: 10px;
+        }
+        .ingredient-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .ingredient-list ul li {
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background-color 0.3s;
+        }
+        .ingredient-list ul li:hover {
+            background-color: #e0e0e0;
+        }
+        .ingredient-list ul li .ingredient-name {
+            display: flex;
+            align-items: center;
+        }
+        .ingredient-list ul li input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .ingredient-list ul li .already-added {
+            color: red;
+            margin-left: 10px;
+        }
+        .ingredient-list button {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 20px auto;
+        }
+        .ingredient-list button:hover {
+            background-color: #555;
+        }
+        .message {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none; /* 기본적으로 숨김 */
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .visible {
+            display: block;
+        }
+    </style>
+    <script>
+        function validateIngredientSelection() {
+            const checkboxes = document.querySelectorAll('input[name="ingredients"]:not(:disabled)');
+            const isAnyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            const errorDiv = document.getElementById('ingredientSelectionError');
+            if (!isAnyChecked) {
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+
+<div class="header">
+    <a href="/main" class="logo">R2R</a>
+    <div class="search-bar-container">
+        <form class="search-bar" action="/recipe/search" method="GET">
+            <button type="submit" class="search-icon">
+                <img th:src="@{/images/search_img.png}" alt="Search" width="20">
+            </button>
+            <input type="text" name="q" placeholder="검색어를 입력해주세요." required>
+        </form>
+    </div>
+    <div class="buttons">
+        <a href="/receipt/receipt_recognition"><button type="button">영수증 인식</button></a>
+        <a href="/my_fridge"><button type="button">나의 냉장고</button></a>
+        <a href="/recommend_recipes"><button type="button">레시피 추천</button></a>
+        <a href="https://github.com/Re-Bugs/receipt2recipe" target="_blank"><button type="button">GitHub</button></a>
+    </div>
+    <div class="user-info">
+        <img th:src="@{/images/profile.png}" alt="Profile Icon">
+        <div class="user-details">
+            <div th:text="${userEmail}"></div>
+            <div th:text="${userName} + ' 님'"></div>
+        </div>
+        <a href="/sign_out" class="logout-btn">로그아웃</a>
+    </div>
+</div>
+
+<div class="upload-form">
+    <h1>영수증 인식 결과</h1>
+
+    <div th:if="${message}" th:text="${message}" class="message success visible"></div>
+    <div th:if="${errorMessage}" th:text="${errorMessage}" class="message error visible"></div>
+
+    <div class="ingredient-list" th:if="${matchedIngredients != null}">
+        <h3>일치하는 재료 목록</h3>
+        <form action="/receipt/add_to_fridge" method="post" onsubmit="return validateIngredientSelection();">
+            <ul>
+                <li th:each="ingredient : ${matchedIngredients}">
+                    <div class="ingredient-name">
+                        <input type="checkbox" name="ingredients" th:value="${ingredient}" th:disabled="${#lists.contains(fridgeIngredients, ingredient)}"/>
+                        <span th:text="${ingredient}"></span>
+                    </div>
+                    <span class="already-added" th:if="${#lists.contains(fridgeIngredients, ingredient)}">이미 추가된 재료입니다.</span>
+                </li>
+            </ul>
+            <div id="ingredientSelectionError" class="message error" style="display: none;">재료를 선택하지 않았습니다.</div>
+            <button type="submit">추가</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
