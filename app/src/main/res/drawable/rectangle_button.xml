@@ -1,0 +1,6 @@
+<!-- rectangle_button.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#D19A56" /> <!-- 배경색 설정 -->
+    <corners android:radius="8dp" /> <!-- 모서리를 둥글게 설정 -->
+</shape>

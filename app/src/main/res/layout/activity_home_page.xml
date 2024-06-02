@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".page.HomePage">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
+
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="166dp"
+            android:layout_height="57dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="38dp"
+            android:layout_marginEnd="207dp"
+            android:layout_marginBottom="637dp"
+            android:text="인기 레시피"
+            android:textSize="32dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="166dp"
+            android:layout_height="57dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="145dp"
+            android:layout_marginBottom="589dp"
+            android:text="Top 5"
+            android:textSize="32dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/favoriteButton"
+            android:layout_width="34dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="347dp"
+            android:layout_marginEnd="31dp"
+            android:layout_marginBottom="655dp"
+            android:background="@drawable/favorite_24dp_fill0_wght400_grad0_opsz24"
+            android:onClick="transitionToNextActivity"
+            app:backgroundTint="@color/black" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="285dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="67dp" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="441dp"
+            android:background="#39000000" />
+
+        <TextView
+            android:id="@+id/reciptRanking"
+            android:layout_width="161dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="245dp"
+            android:layout_marginBottom="388dp"
+            android:text="레시피 랭킹"
+            android:textSize="30sp" />
+
+
+
+        <Button
+            android:id="@+id/home"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="327dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/home_24dp_fill0_wght400_grad0_opsz24"
+            android:onClick="transitionToNextActivity"
+            app:backgroundTint="#7E7E7E" />
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="96dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/search_24dp_fill0_wght400_grad0_opsz24"
+            android:onClick="transitionToNextActivity"
+            app:backgroundTint="@color/black" />
+
+        <Button
+            android:id="@+id/picture_add"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="172dp"
+            android:layout_marginBottom="13dp"
+            android:background="@drawable/add_a_photo_24dp_fill0_wght400_grad0_opsz24"
+            android:onClick="transitionToNextActivity"
+            app:backgroundTint="@color/black" />
+
+        <Button
+            android:id="@+id/list_item"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="253dp"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/list_24dp_fill0_wght400_grad0_opsz24"
+            android:onClick="transitionToNextActivity"
+            app:backgroundTint="@color/black" />
+
+        <Button
+            android:id="@+id/recommend"
+            android:layout_width="52dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="22dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/recommend_24dp_fill0_wght400_grad0_opsz24"
+            android:onClick="transitionToNextActivity"
+            app:backgroundTint="@color/black" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/topFive"
+            android:layout_width="match_parent"
+            android:layout_height="154dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="444dp" />
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
