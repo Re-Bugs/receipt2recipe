@@ -19,7 +19,7 @@
 | 이름   | 학과         | 역할                    |
 | ------ | ------------ | ----------------------- |
 | 이승욱 | AI소프트웨어 | Back-End, Web Front-End |
-| 채정민 | AI소프트웨어 | DB                      |
+| 채정민 | AI소프트웨어 | 데이터베이스 모델링     |
 | 송기남 | AI소프트웨어 | UI                      |
 | 이창엽 | AI소프트웨어 | Mobile Front-End        |
 
@@ -27,12 +27,12 @@
 
 ### Role
 
-| 역할      | 설명                                                         |
-| --------- | ------------------------------------------------------------ |
-| Back-End  | -애플리케이션의 핵심 기능과 비즈니스 로직을 구현하는 역할<br />-데이터베이스와 클라이언트(프론트엔드) 간의 통신을 관리하고, 사용자 요청을 처리하여 적절한 응답을 제공<br />-RESTful API를 설계하고 개발하여 클라이언트가 서버와 상호작용할 수 있도록 함 |
-| DB        | -데이터베이스 모델링을 통하여 데이터 구조를 명확히 정의하여 데이터 일관성을 유지하고 무결성을 보장<br />-이를 통해 데이터 중복을 줄이고 데이터의 정확성과 신뢰성을 확보 |
-| UI        | -사용자에게 직관적이고 아름다운 인터페이스를 제공하여 사용 편의성 높이고, 좋은 경험을 할 수 있게 함 |
-| Front-End | -사용자와 직접 상호작용하는 웹과 모바일 애플리케이션의 UI와 UX를 구현하여 사용자 경험을 향상시킴<br />-이를 통해 직관적이고 반응성 높은 인터페이스를 제공하여 사용자 만족도와 접근성을 높임 |
+| 역할                | 설명                                                         |
+| ------------------- | ------------------------------------------------------------ |
+| Back-End            | -애플리케이션의 핵심 기능과 비즈니스 로직을 구현하는 역할<br />-데이터베이스와 클라이언트(프론트엔드) 간의 통신을 관리하고, 사용자 요청을 처리하여 적절한 응답을 제공<br />-RESTful API를 설계하고 개발하여 클라이언트가 서버와 상호작용할 수 있도록 함 |
+| 데이터베이스 모델링 | -데이터베이스 모델링을 통하여 데이터 구조를 명확히 정의하여 데이터 일관성을 유지하고 무결성을 보장<br />-이를 통해 데이터 중복을 줄이고 데이터의 정확성과 신뢰성을 확보 |
+| UI                  | -사용자에게 직관적이고 아름다운 인터페이스를 제공하여 사용 편의성 높이고, 좋은 경험을 할 수 있게 함 |
+| Front-End           | -사용자와 직접 상호작용하는 웹과 모바일 애플리케이션의 UI와 UX를 구현하여 사용자 경험을 향상시킴<br />-이를 통해 직관적이고 반응성 높은 인터페이스를 제공하여 사용자 만족도와 접근성을 높임 |
 
 <br>
 
@@ -43,6 +43,8 @@
 ## Architecture
 
 ![Architecture](images/README/Architecture.png)
+
+레시피 데이터는 만개의 레시피에서 얻었음을 알립니다. https://www.10000recipe.com/
 
 <br>
 
@@ -94,7 +96,7 @@
 | Front-End(Web)    | HTML, CSS, JavaScript       |
 | Front-End(Mobile) | Android Native(Kotlin)      |
 | API               | Google Cloud Vision API     |
-| UI                | Figma                       |
+| Mobile UI         | Figma                       |
 
 <br>
 
@@ -106,7 +108,7 @@
 
 ### Web
 
-![image-20240529235213103](images/README/image-20240529235213103.png)
+![스크린샷 2024-06-09 오전 1.11.41](images/README/스크린샷 2024-06-09 오전 1.11.41.png)
 
 ![image-20240602121111550](images/README/image-20240602121111550.png)
 
@@ -136,58 +138,16 @@
 
 <br>
 
-### 레시피 추천 핵심코드
-
-```java
-@Query("SELECT r FROM Recipe r " +
-        "JOIN RecipeIgdt ri ON r.id = ri.recipe.id " +
-        "WHERE ri.ingredient.id IN :ingredientIds " +
-        "AND EXISTS (SELECT 1 FROM RecipeIgdt rii WHERE rii.recipe.id = r.id AND rii.id = " +
-        "(SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id) AND rii.ingredient.id IN :ingredientIds) " +
-        "GROUP BY r.id " +
-        "ORDER BY COUNT(ri.ingredient.id) DESC")
-    List<Recipe> findTopRecipesByIngredientIds(@Param("ingredientIds") List<Long> ingredientIds, Pageable pageable);
-```
+### 레시피 추천 원리
 
 > [!IMPORTANT]
 >
-> #### JPQL
->
-> SELECT r FROM Recipe r:<br>
-> -Recipe 엔터티를 r이라는 별칭으로 선택한다.<br>
->
-> <br>
->
-> JOIN RecipeIgdt ri ON r.id = ri.recipe.id:<br>
-> -Recipe와 RecipeIgdt 엔터티를 조인하여, 레시피와 관련된 재료 정보를 가져온다.<br>
->
-> <br>
->
-> WHERE ri.ingredient.id IN<br>
-> -ingredientIds 목록에 포함된 재료를 가진 레시피를 필터링한다.<br>
-> -:ingredientIds는 메서드 호출 시 전달되는 파라미터이다.<br>
->
-> <br>
->
-> AND EXISTS (SELECT 1 FROM RecipeIgdt rii WHERE rii.recipe.id = r.id AND rii.id = (SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id) AND rii.ingredient.id IN)<br>
-> -서브쿼리를 사용하여, 해당 레시피에 최소 하나 이상의 지정된 재료가 포함되어 있는지 확인한다.<br>
-> -rii.id = (SELECT MIN(riii.id) FROM RecipeIgdt riii WHERE riii.recipe.id = r.id)는 해당 레시피의 첫 번째 재료 ID를 찾는 조건이다.<br>
->
-> <br>
->
-> GROUP BY r.id<br>
-> -레시피 ID별로 그룹화하여 동일한 레시피의 재료들을 묶는다.<br>
->
-> <br>
->
-> ORDER BY COUNT(ri.ingredient.id) DESC<br>
-> -각 레시피에 포함된 재료의 수를 기준으로 내림차순으로 정렬한다. 즉, 더 많은 재료를 포함한 레시피가 상위에 위치하게 된다.<br>
->
-> <br>
->
-> Recipe 엔터티는 recipes 테이블에 매핑된다.
-> RecipeIgdt 엔터티는 recipe_igdt 테이블에 매핑된다.
-> Ingredient 엔터티는 ingredients 테이블에 매핑된다.
+> 1. 하나의 레시피의 재료 중에서 **핵심이 되는 재료를 보유하고 있지 않다면 추천 리스트에서 제외**한다. <br>
+>    예를 들어, 김치찌개 레시피 재료 중에서 김치가 없다면, 김치찌개 레시피는 추천하지 않는다.
+> 2. **하나의 레시피의 총 재료수를 사용자가 보유한 해당 레시피 재료의 수로 나눈 값을 정렬하여, 상위 10개의 레시피를 추천**한다.<br>
+>    예를 들어, 10개의 재료를 요구하는 레시피에서 사용자가 10개를 보유하고 있다면 10 / 10 = 1<br>
+>    5개의 재료를 보유하고 있다면, 10 / 5 = 2<br>
+>    이후 값이 작은 순으로 정렬하여 상위 10개의 레시피를 추천
 
 <br>
 
@@ -199,7 +159,9 @@
 
 > [!TIP]
 >
-> BASE URL : https://r2-r.com/
+> BASE URL : https://r2-r.com/ <br>
+>
+> 24년 6월 9일 이후로 비용 문제로 AWS 서버를 닫습니다.
 
 <br>
 
