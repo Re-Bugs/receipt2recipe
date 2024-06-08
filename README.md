@@ -108,7 +108,7 @@
 
 ### Web
 
-![스크린샷 2024-06-09 오전 1.11.41](images/README/스크린샷 2024-06-09 오전 1.11.41.png)
+![main](images/README/main.png)
 
 ![image-20240602121111550](images/README/image-20240602121111550.png)
 
